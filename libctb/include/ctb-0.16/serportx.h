@@ -14,7 +14,6 @@
 #include "ctb-0.16/iobase.h"
 
 #if defined (WIN32)
-# define snprintf _snprintf
 #endif
 
 /**

@@ -75,8 +75,10 @@
 #define FILEEXT_3GP DEFDWORD('3' - 32, 'G','P',0)
 #define FILEEXT_ASF DEFDWORD('A','S','F',0)
 #define FILEEXT_264 DEFDWORD('2' - 32, '6' - 32, '4' - 32, 0)
+#define FILEEXT_GZ DEFDWORD('G','Z',0,0)
 #define FILEEXT_TS DEFDWORD('T', 'S', 0, 0)
 #define FILEEXT_M3U8 DEFDWORD('M', '3' - 32, 'U', '8' - 32)
+#define FILEEXT_WASM DEFDWORD('W', 'A', 'S', 'M')
 #define FILEEXT_SDP DEFDWORD('S', 'D', 'P', 0)
 
 // Settings for http server

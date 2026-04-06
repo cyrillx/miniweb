@@ -13,7 +13,6 @@
 #include <string.h>
 #ifdef WIN32
 # include "ctb-0.16/win32/gpib-32.h"
-# define snprintf _snprintf
 #elif __GNUG__
 # include <gpib/ib.h>
 #endif

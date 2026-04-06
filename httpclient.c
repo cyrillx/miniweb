@@ -16,7 +16,6 @@
 #define open _open
 #define close _close
 #define lseek _lseek
-#define snprintf _snprintf
 #define stricmp _stricmp
 
 #else

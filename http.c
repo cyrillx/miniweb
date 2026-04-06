@@ -97,6 +97,7 @@ const char* contentTypeTable[]={
 	"application/x-datastream",
 	"application/x-mpegURL",
 	"application/sdp",
+	"application/wasm",
 	"application/binhex",
 };
 
@@ -751,7 +752,19 @@ int _mwBuildHttpHeader(HttpParam* hp, HttpSocket *phsSocket, time_t contentDateT
 	if (phsSocket->request.iCSeq) {
 		p += snprintf(p, end - p, "CSeq: %d\r\n", phsSocket->request.iCSeq);
 	}
-	p+=snprintf(p, end - p, "Content-Type: %s\r\n", phsSocket->mimeType ? phsSocket->mimeType : contentTypeTable[phsSocket->response.fileType]);
+	BOOL contentTypeWritten = FALSE;
+	if (phsSocket->response.fileType == HTTPFILETYPE_GZIP) {
+		p += snprintf(p, end - p, "Content-Encoding: gzip\r\n");
+		if (strstr(phsSocket->request.pucPath, ".wasm.gz")) {
+			p += snprintf(p, end - p, "Content-Type: application/wasm\r\n");
+			contentTypeWritten = TRUE;
+		} else {
+			phsSocket->response.fileType = HTTPFILETYPE_OCTET;
+		}
+	}
+	if (!contentTypeWritten) {
+		p+=snprintf(p, end - p, "Content-Type: %s\r\n", phsSocket->mimeType ? phsSocket->mimeType : contentTypeTable[phsSocket->response.fileType]);
+	}
 	if (phsSocket->response.contentLength > 0 && !(phsSocket->flags & FLAG_CHUNK)) {
 		p+=snprintf(p, end - p,"Content-Length: %d\r\n", phsSocket->response.contentLength);
 	}
@@ -2063,6 +2076,7 @@ int mwGetContentType(const char *pchExtname)
 	} else if (pchExtname[2]=='\0') {
 		memcpy(&dwExt, pchExtname, 2);
 		switch (GETDWORD(pchExtname) & 0xffdfdf) {
+		case FILEEXT_GZ: return HTTPFILETYPE_GZIP;
 		case FILEEXT_JS: return HTTPFILETYPE_JS;
 		case FILEEXT_TS: return HTTPFILETYPE_TS;
 		}
@@ -2098,6 +2112,7 @@ int mwGetContentType(const char *pchExtname)
 		case FILEEXT_HTML:	return HTTPFILETYPE_HTML;
 		case FILEEXT_MPEG:	return HTTPFILETYPE_MPEG;
 		case FILEEXT_M3U8:	return HTTPFILETYPE_M3U8;
+		case FILEEXT_WASM:	return HTTPFILETYPE_WASM;
 		}
 	}
 	return HTTPFILETYPE_OCTET;

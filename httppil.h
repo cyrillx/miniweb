@@ -24,8 +24,6 @@
 #include <windows.h>
 #include <io.h>
 
-#define snprintf _snprintf
-
 #else
 #include <stdlib.h>
 #include <unistd.h>
